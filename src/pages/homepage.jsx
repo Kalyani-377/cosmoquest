@@ -1,5 +1,5 @@
 import TopNavbar from "../components/topnav";
-import spaceVideo from "../assets/space4.mp4";
+import spaceVideo from "../assets/space.mp4";
 import "./homepage.css";
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
@@ -88,21 +88,20 @@ export default function Home() {
                     loop
                     muted
                     playsInline
-                    className="absolute inset-0 w-full h-full object-cover -z-10 opacity-60"
+                    className="absolute inset-0 w-full h-full object-cover -z-10 opacity-70 brightness-90"
                 >
                     <source src={spaceVideo} type="video/mp4" />
                 </video>
 
-                <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black -z-10"></div>
+                <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black -z-10"></div>
 
                 <div className="relative z-10 flex flex-col items-center text-center max-w-4xl">
                     <h1 className="text-6xl font-bold mb-6 tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-white via-blue-200 to-white/50">
                         Explore the Universe
                     </h1>
 
-                    {/* NASA IMAGE OF THE DAY */}
                     {dashboardData.apod && (
-                        <div className="mb-12 group cursor-pointer max-w-2xl" onClick={() => navigate('/apod')}>
+                        <div className="mb-12 group cursor-pointer max-w-lg" onClick={() => navigate('/apod')}>
                             <div className="relative overflow-hidden rounded-2xl border border-white/10 shadow-[0_0_50px_rgba(0,100,255,0.1)] group-hover:border-blue-500/30 transition-all duration-500">
                                 <img
                                     src={dashboardData.apod.image}
@@ -149,7 +148,12 @@ export default function Home() {
                                 onClick={() => navigate(`/events/${event.id}`)}
                                 className="bg-white/5 border border-white/10 rounded-2xl p-6 cursor-pointer hover:bg-white/10 transition-all hover:-translate-y-1"
                             >
-                                <h3 className="text-xl font-semibold mb-2">{event.name}</h3>
+                                <div className="flex justify-between items-start mb-4">
+                                    <h3 className="text-xl font-semibold">{event.event_type || event.name}</h3>
+                                    {event.source === "NASA LIVE" && (
+                                        <span className="px-2 py-0.5 bg-red-500/20 border border-red-500/50 rounded text-[8px] font-bold text-red-400 animate-pulse">LIVE NASA DATA</span>
+                                    )}
+                                </div>
                                 <p className="text-white/60 text-sm mb-4">Visibility: {event.visibility}</p>
                                 <p className="text-white/40 text-sm line-clamp-2">{event.description}</p>
                                 <div className="mt-4 text-blue-400 text-xs font-bold tracking-widest">VIEW DETAILS →</div>

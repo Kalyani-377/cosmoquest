@@ -48,7 +48,7 @@ export default function EventsPage() {
             (isGlobal && search.length > 0); // Keep global events visible during search
 
         const matchesFilter =
-            filter === "all" | c |
+            filter === "all" ||
             event.type?.toLowerCase().includes(filter.toLowerCase()) ||
             event.event_type?.toLowerCase().includes(filter.toLowerCase());
 
@@ -114,16 +114,23 @@ export default function EventsPage() {
                                 <div className="absolute top-0 left-0 w-1 h-full bg-blue-500 scale-y-0 group-hover:scale-y-100 transition-transform origin-top duration-500"></div>
 
                                 <div className="flex justify-between items-start mb-6">
-                                    <span className="px-3 py-1 bg-blue-500/10 border border-blue-500/30 rounded-full text-[10px] font-bold tracking-widest text-blue-400 uppercase">
-                                        {event.type || 'Cosmic'}
-                                    </span>
+                                    <div className="flex flex-col gap-2">
+                                        <span className="px-3 py-1 bg-blue-500/10 border border-blue-500/30 rounded-full text-[10px] font-bold tracking-widest text-blue-400 uppercase w-fit">
+                                            {event.type || 'Cosmic'}
+                                        </span>
+                                        {event.source === "NASA LIVE" && (
+                                            <span className="px-3 py-1 bg-red-500/10 border border-red-500/30 rounded-full text-[8px] font-bold tracking-[0.2em] text-red-500 uppercase animate-pulse w-fit">
+                                                LIVE NASA DATA
+                                            </span>
+                                        )}
+                                    </div>
                                     <span className="text-[10px] text-white/30 uppercase tracking-widest">
-                                        {event.location}
+                                        {event.location || "Global"}
                                     </span>
                                 </div>
 
                                 <h3 className="text-2xl font-bold mb-3 group-hover:text-blue-400 transition-colors">
-                                    {event.event_type}
+                                    {event.event_type || event.name}
                                 </h3>
 
                                 <div className="flex items-center gap-2 mb-4">
