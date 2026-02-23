@@ -7,11 +7,12 @@ from dotenv import load_dotenv
 import requests
 import os
 
-load_dotenv()  # Load variables from .env file
+load_dotenv(".env.local")
+load_dotenv()  # Fallback to .env if .env.local is missing
 
-NASA_API_KEY = "9vHqOmdd1WmG3l4Q4bBaN3Mn9imUsoyYFdw4C3vB"
+NASA_API_KEY = os.getenv("NASA_API_KEY")
 # 🔐 Clerk domain
-CLERK_DOMAIN = "curious-donkey-17.clerk.accounts.dev"
+CLERK_DOMAIN = os.getenv("CLERK_DOMAIN")
 JWKS_URL = f"https://{CLERK_DOMAIN}/.well-known/jwks.json"
 
 # Global JWKS cache
