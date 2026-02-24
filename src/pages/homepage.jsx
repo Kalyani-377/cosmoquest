@@ -18,16 +18,24 @@ export default function Home() {
     const [filter, setFilter] = useState("all");
 
     useEffect(() => {
-        // Force refresh if cache doesn't have the new curated event types
-        const hasCuratedEvents = dashboardData?.events?.some(e => ['iss', 'planets', 'meteors'].includes(e.type));
+        const today = new Date().toISOString().split('T')[0];
 
-        if (dashboardData && dashboardData.apod && hasCuratedEvents) return;
+        // Force refresh if cache doesn't have the new curated event types or if it's from a different day
+        const hasCuratedEvents = dashboardData?.events?.some(e => ['iss', 'planets', 'meteors'].includes(e.type));
+        const isDataFresh = dashboardData?.cachedDate === today;
+
+        if (dashboardData && dashboardData.apod && hasCuratedEvents && isDataFresh) return;
 
         const fetchDashboard = async (lat, lng) => {
             try {
                 const token = await getToken();
+                if (!token) {
+                    console.error("No Clerk token found. User might be logged out or Clerk failed to load.");
+                    setLoading(false);
+                    return;
+                }
 
-                const res = await fetch("http://localhost:5000/dashboard", {
+                const res = await fetch("http://127.0.0.1:5000/dashboard", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -37,6 +45,9 @@ export default function Home() {
                 });
 
                 const data = await res.json();
+
+                // Add current date to data for caching logic
+                data.cachedDate = today;
 
                 // Save to cache
                 sessionStorage.setItem("dashboardData", JSON.stringify(data));
@@ -88,7 +99,7 @@ export default function Home() {
                     loop
                     muted
                     playsInline
-                    className="absolute inset-0 w-full h-full object-cover -z-10 opacity-70 brightness-90"
+                    className="absolute inset-0 w-full h-full object-cover -z-10 opacity-100"
                 >
                     <source src={spaceVideo} type="video/mp4" />
                 </video>
@@ -130,6 +141,7 @@ export default function Home() {
                         <CategoryCard label="🪐 Planets" active={filter === "planets"} onClick={() => setFilter("planets")} />
                         <CategoryCard label="☄ Meteors" active={filter === "meteors"} onClick={() => setFilter("meteors")} />
                         <CategoryCard label="🌑 Eclipses" active={filter === "eclipses"} onClick={() => setFilter("eclipses")} />
+                        <CategoryCard label="✨ Constellations" active={filter === "constellations"} onClick={() => setFilter("constellations")} />
                     </div>
                 </div>
             </section>
@@ -150,11 +162,19 @@ export default function Home() {
                             >
                                 <div className="flex justify-between items-start mb-4">
                                     <h3 className="text-xl font-semibold">{event.event_type || event.name}</h3>
-                                    {event.source === "NASA LIVE" && (
-                                        <span className="px-2 py-0.5 bg-red-500/20 border border-red-500/50 rounded text-[8px] font-bold text-red-400 animate-pulse">LIVE NASA DATA</span>
-                                    )}
+                                    <span className="px-4 py-1.5 bg-blue-500/10 border border-blue-500/30 rounded-lg text-sm font-black tracking-widest text-white shadow-lg whitespace-nowrap">
+                                        {event.date}
+                                    </span>
                                 </div>
-                                <p className="text-white/60 text-sm mb-4">Visibility: {event.visibility}</p>
+                                <div className="flex items-center gap-2 mb-4">
+                                    <span className="text-white/60 text-sm">Visibility:</span>
+                                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${event.visibility?.toLowerCase().includes('high') ? 'bg-green-500/20 text-green-400 border border-green-500/50' :
+                                        event.visibility?.toLowerCase().includes('medium') ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/50' :
+                                            'bg-red-500/20 text-red-400 border border-red-500/50'
+                                        }`}>
+                                        {event.visibility}
+                                    </span>
+                                </div>
                                 <p className="text-white/40 text-sm line-clamp-2">{event.description}</p>
                                 <div className="mt-4 text-blue-400 text-xs font-bold tracking-widest">VIEW DETAILS →</div>
                             </div>

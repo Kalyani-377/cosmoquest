@@ -110,6 +110,11 @@ export default function EventDetails() {
                             <p className="text-blue-400 text-lg tracking-[0.3em] font-light">
                                 TARGET IDENTIFIED FROM YOUR COORDINATES
                             </p>
+                            {event.date && (
+                                <div className="mt-8 inline-block px-6 py-2 bg-white/10 border border-white/20 rounded-xl">
+                                    <span className="text-white text-2xl font-black tracking-widest">{event.date}</span>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -175,8 +180,14 @@ export default function EventDetails() {
                                 </div>
                                 <div>
                                     <label className="text-[10px] text-white/30 uppercase tracking-[0.2em] block mb-2 font-bold">Atmospheric Condition</label>
-                                    <span className="text-3xl font-black text-white">{event.weather?.condition || "Optimal"}</span>
+                                    <span className="text-3xl font-black text-white">{event.weather?.condition || "Scanning..."}</span>
                                 </div>
+                                {event.weather?.cloud_cover !== undefined && (
+                                    <div>
+                                        <label className="text-[10px] text-white/30 uppercase tracking-[0.2em] block mb-2 font-bold">Local Cloud Cover</label>
+                                        <span className="text-3xl font-black text-blue-400">{event.weather.cloud_cover}%</span>
+                                    </div>
+                                )}
                                 <div>
                                     <label className="text-[10px] text-white/30 uppercase tracking-[0.2em] block mb-2 font-bold">Recommended Gear</label>
                                     <div className="p-4 bg-white/5 rounded-2xl border border-white/10">

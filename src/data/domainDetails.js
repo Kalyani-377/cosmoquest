@@ -362,252 +362,48 @@ export const domainDetails = {
             { title: "Robotics in Space Exploration", link: "https://youtu.be/1yhb-YJz5qo?si=to4KjioFW_kc_QNE" }
         ]
     },
-    "aerospace-materials": {
-        overview: "Aerospace Materials research focuses on lightweight and heat-resistant materials used in spacecraft and rockets.",
-
+    "space-materials": {
+        overview: "Space Materials focus on developing and testing materials that can withstand the extreme conditions of space, including vacuum, radiation, and thermal extremes.",
         roadmap: {
-            beginner: ["Material Science Basics", "Chemistry Fundamentals"],
-            intermediate: ["Composite Materials", "Thermal Properties"],
-            advanced: ["Advanced Aerospace Alloys", "Heat Shield Design"]
+            beginner: ["Chemistry Fundamentals", "Intro to Material Science"],
+            intermediate: ["Composite Structures", "Thermal Analysis"],
+            advanced: ["Radiation Shielding Materials", "Smart Materials for Space"]
         },
-
-        skills: ["Material Testing", "Thermal Analysis", "Research"],
-
-        qualifications: "Bachelor's in Material Science or Mechanical Engineering.",
-
+        skills: ["Material Testing", "Chemical Analysis", "Research"],
+        qualifications: "Bachelor's in Material Science, Chemistry, or Mechanical Engineering.",
         careers: [
-            { role: "Aerospace Materials Engineer", demand: "High in aerospace manufacturing", type: "engineering" },
-            { role: "Heat Shield Researcher", demand: "Growing in re-entry vehicle design", type: "research" }
+            { role: "Materials Engineer", demand: "High in aerospace manufacturing", type: "engineering" },
+            { role: "Thermal Protection Specialist", demand: "Growing with re-entry vehicle development", type: "engineering" }
         ],
-
         industryOutlook: {
-            summary: "Essential for reusable rockets and hypersonic vehicles.",
-            growthFactors: [
-                "Reusable spacecraft",
-                "Advanced composites",
-                "Thermal protection systems"
-            ],
-            riskFactors: [
-                "High testing costs",
-                "Material failure risks"
-            ]
+            summary: "Steady demand as new spacecraft require more advanced and lighter materials.",
+            growthFactors: ["Reusable rocket tech", "In-situ resource utilization"],
+            riskFactors: ["Material supply chain issues", "High testing costs"]
         },
-
         videos: [
-            { title: "Materials Used in Rockets", link: "https://youtu.be/EJIP0KxEYB4?si=OBxAw4rT9eplhrwF" }
+            { title: "Space Materials Explained", link: "https://youtu.be/EJIP0KxEYB4" }
         ]
     },
-    "orbital-mechanics": {
-        overview: "Orbital Mechanics studies the motion of spacecraft and celestial bodies under gravitational forces.",
-
+    "spacecraft-design": {
+        overview: "Spacecraft Design involves the systems engineering and architectural planning of entire space vehicles, integrating propulsion, power, and life support.",
         roadmap: {
-            beginner: ["Physics Mechanics", "Calculus"],
-            intermediate: ["Classical Mechanics", "Two-Body Problem"],
-            advanced: ["Interplanetary Trajectories", "Orbit Optimization"]
+            beginner: ["Systems Engineering Basics", "Physics Mechanics"],
+            intermediate: ["Spacecraft Subsystems", "CAD Modeling"],
+            advanced: ["Integrated Vehicle Design", "Reliability Engineering"]
         },
-
-        skills: ["Mathematical Modeling", "Simulation Tools", "Analytical Thinking"],
-
-        qualifications: "Bachelor's in Aerospace or Physics.",
-
+        skills: ["CAD/SolidWorks", "Systems Integration", "Project Management"],
+        qualifications: "Bachelor's in Aerospace or Systems Engineering.",
         careers: [
-            { role: "Orbital Analyst", demand: "High in mission planning teams", type: "engineering" },
-            { role: "Trajectory Engineer", demand: "Growing with deep space missions", type: "engineering" }
+            { role: "Spacecraft Architect", demand: "Growing in private space sector", type: "engineering" },
+            { role: "Systems Integration Engineer", demand: "High demand in mission control", type: "engineering" }
         ],
-
         industryOutlook: {
-            summary: "Critical for satellite constellations and interplanetary missions.",
-            growthFactors: [
-                "Satellite constellations",
-                "Deep space exploration",
-                "Autonomous navigation systems"
-            ],
-            riskFactors: [
-                "Complex mathematical modeling",
-                "Mission precision requirements"
-            ]
+            summary: "Expanding rapidly with the rise of commercial space flight and small-satellite constellations.",
+            growthFactors: ["Small-sat revolution", "Private human spaceflight"],
+            riskFactors: ["Complex regulatory hurdles", "High project failure stakes"]
         },
-
         videos: [
-            { title: "Understanding Orbital Mechanics", link: "https://youtu.be/bcvnfQlz1x4?si=X4amXX9jHQNXGx_Z" }
-        ]
-    },
-
-    "space-communications": {
-        overview: "Space Communications focuses on transmitting data between spacecraft, satellites, and ground stations using advanced radio and optical systems.",
-
-        roadmap: {
-            beginner: ["Basic Electronics", "Signal Fundamentals", "Physics"],
-            intermediate: ["Digital Communication Systems", "Signal Processing"],
-            advanced: ["Deep Space Networks", "Laser Communication Systems"]
-        },
-
-        skills: ["Signal Analysis", "RF Systems", "Communication Protocols"],
-
-        qualifications: "Bachelor's in Electronics or Communication Engineering.",
-
-        careers: [
-            { role: "Space Communication Engineer", demand: "High with satellite constellations", type: "engineering" },
-            { role: "RF Systems Analyst", demand: "Growing with deep space missions", type: "engineering" }
-        ],
-
-        industryOutlook: {
-            summary: "Rapid growth driven by global satellite internet and interplanetary communication systems.",
-            growthFactors: [
-                "Satellite internet networks",
-                "Deep space communication upgrades",
-                "Laser communication technology"
-            ],
-            riskFactors: [
-                "Signal interference",
-                "High infrastructure costs"
-            ]
-        },
-
-        videos: [
-            { title: "How Space Communication Works", link: "https://youtu.be/MDMM9MZNcco?si=5bfLiT3fwYq4-0s2" },
-            { title: "introduction to space communication", link: "https://youtube.com/playlist?list=PLVsrfTSlZ_43SERuuAZZ-u1PBnwwn2ZfC&si=9QniFOZLW1NA6Ai8" }
-        ]
-    },
-    "earth-observation": {
-        overview: "Earth Observation uses satellites to monitor climate, weather, agriculture, and environmental changes on Earth.",
-
-        roadmap: {
-            beginner: ["Geography Basics", "Physics", "Programming Basics"],
-            intermediate: ["Remote Sensing", "GIS Systems"],
-            advanced: ["Climate Modeling", "Satellite Image Analysis"]
-        },
-
-        skills: ["Data Analysis", "Remote Sensing Tools", "GIS"],
-
-        qualifications: "Bachelor's in Environmental Science, Geoinformatics, or Space Science.",
-
-        careers: [
-            { role: "Remote Sensing Analyst", demand: "High in environmental monitoring", type: "ai" },
-            { role: "Earth Observation Scientist", demand: "Growing with climate research", type: "research" }
-        ],
-
-        industryOutlook: {
-            summary: "Strong demand due to climate change monitoring and disaster management.",
-            growthFactors: [
-                "Climate monitoring programs",
-                "Agricultural satellite data",
-                "Disaster response systems"
-            ],
-            riskFactors: [
-                "Policy changes",
-                "Data privacy concerns"
-            ]
-        },
-
-        videos: [
-            { title: "Earth Observation Explained", link: "https://youtu.be/Q4WK_J9HtDE?si=asjONsWOhDJX8C7-" },
-            { title: "how to obsereve the earth from satellites", link: "https://youtu.be/EnF_ljgk3gk?si=Je_msrAq8P3w8ViB" }
-        ]
-    },
-    "space-policy": {
-        overview: "Space Policy focuses on laws, regulations, and international agreements governing space exploration and satellite operations.",
-
-        roadmap: {
-            beginner: ["International Relations Basics", "Law Fundamentals"],
-            intermediate: ["Space Law", "Policy Analysis"],
-            advanced: ["Global Space Treaties", "Commercial Space Regulation"]
-        },
-
-        skills: ["Policy Research", "Legal Analysis", "Strategic Planning"],
-
-        qualifications: "Bachelor's in Law, International Relations, or Public Policy.",
-
-        careers: [
-            { role: "Space Policy Analyst", demand: "Growing with commercial space expansion", type: "research" },
-            { role: "Regulatory Advisor", demand: "Increasing with private space companies", type: "research" }
-        ],
-
-        industryOutlook: {
-            summary: "Increasing importance due to commercialization and geopolitical competition in space.",
-            growthFactors: [
-                "Private space companies",
-                "International cooperation",
-                "Satellite regulation needs"
-            ],
-            riskFactors: [
-                "Geopolitical tensions",
-                "Policy uncertainty"
-            ]
-        },
-
-        videos: [
-            { title: "Introduction to Space Law", link: "https://youtu.be/NUCZt5OcszY?si=2oWtkI_NN6eMgXJM" }
-        ]
-    },
-    "cosmology": {
-        overview: "Cosmology studies the origin, evolution, and large-scale structure of the universe, including dark matter, dark energy, and the Big Bang theory.",
-
-        roadmap: {
-            beginner: ["Basic Physics", "Calculus", "Introduction to Astronomy"],
-            intermediate: ["General Relativity Basics", "Statistical Mechanics"],
-            advanced: ["Dark Matter & Dark Energy Models", "Cosmic Microwave Background Analysis"]
-        },
-
-        skills: ["Advanced Mathematics", "Theoretical Modeling", "Data Interpretation"],
-
-        qualifications: "Bachelor's in Physics. Master's or PhD required for research-level cosmology.",
-
-        careers: [
-            { role: "Cosmologist", demand: "High in academic research institutions", type: "research" },
-            { role: "Theoretical Astrophysicist", demand: "Growing in cosmology research projects", type: "research" }
-        ],
-
-        industryOutlook: {
-            summary: "Steady academic growth driven by space telescopes and deep-space observatories.",
-            growthFactors: [
-                "Next-generation space telescopes",
-                "Cosmic background radiation studies",
-                "International astrophysics collaborations"
-            ],
-            riskFactors: [
-                "Limited non-academic roles",
-                "High research competition"
-            ]
-        },
-
-        videos: [
-            { title: "What is Cosmology?", link: "https://youtu.be/InFb5t0aUAE?si=ioHGPY0k6slk6jOU" }
-        ]
-    },
-    "space-data-science": {
-        overview: "Space Data Science focuses on analyzing massive datasets generated by satellites, telescopes, and space missions to extract insights and support decision-making.",
-
-        roadmap: {
-            beginner: ["Python Programming", "Statistics", "Linear Algebra"],
-            intermediate: ["Machine Learning", "Data Visualization"],
-            advanced: ["Big Data Systems", "Astronomical Data Pipelines"]
-        },
-
-        skills: ["Python", "Machine Learning", "Data Cleaning", "Statistical Analysis"],
-
-        qualifications: "Bachelor's in Data Science, Computer Science, or Physics.",
-
-        careers: [
-            { role: "Space Data Scientist", demand: "High with satellite and telescope data growth", type: "ai" },
-            { role: "Astroinformatics Researcher", demand: "Growing in research institutions", type: "research" }
-        ],
-
-        industryOutlook: {
-            summary: "Strong growth driven by increasing satellite constellations and space observatories generating massive datasets.",
-            growthFactors: [
-                "Satellite imagery expansion",
-                "Deep-space surveys",
-                "AI integration in mission analytics"
-            ],
-            riskFactors: [
-                "High computational infrastructure cost",
-                "Data privacy and governance concerns"
-            ]
-        },
-
-        videos: [
-            { title: "Data Science in Space Exploration", link: "https://youtu.be/l4dvM05B_Pc?si=lMbUeXS2Dq24zZpS" }
+            { title: "How to Design a Spacecraft", link: "https://youtu.be/RWbeFsbKDO0" }
         ]
     },
     "space-simulation": {
@@ -644,14 +440,137 @@ export const domainDetails = {
         videos: [
             { title: "Space Mission Simulation Explained", link: "https://youtu.be/o2FFtPPM3iY?si=TZBzzAzVfkUhW86v" }
         ]
+    },
+    "cosmology": {
+        overview: "Cosmology studies the origin, evolution, and large-scale structure of the universe, including dark matter, dark energy, and the Big Bang theory.",
+        roadmap: {
+            beginner: ["Basic Physics", "Calculus", "Introduction to Astronomy"],
+            intermediate: ["General Relativity Basics", "Statistical Mechanics"],
+            advanced: ["Dark Matter & Dark Energy Models", "Cosmic Microwave Background Analysis"]
+        },
+        skills: ["Advanced Mathematics", "Theoretical Modeling", "Data Interpretation"],
+        qualifications: "Bachelor's in Physics. Master's or PhD required for research-level cosmology.",
+        careers: [
+            { role: "Cosmologist", demand: "High in academic research institutions", type: "research" },
+            { role: "Theoretical Astrophysicist", demand: "Growing in cosmology research projects", type: "research" }
+        ],
+        industryOutlook: {
+            summary: "Steady academic growth driven by space telescopes and deep-space observatories.",
+            growthFactors: ["Next-generation space telescopes", "Cosmic background radiation studies"],
+            riskFactors: ["Limited non-academic roles", "High research competition"]
+        },
+        videos: [
+            { title: "What is Cosmology?", link: "https://youtu.be/InFb5t0aUAE?si=ioHGPY0k6slk6jOU" }
+        ]
+    },
+    "space-data-science": {
+        overview: "Space Data Science focuses on analyzing massive datasets generated by satellites, telescopes, and space missions to extract insights and support decision-making.",
+        roadmap: {
+            beginner: ["Python Programming", "Statistics", "Linear Algebra"],
+            intermediate: ["Machine Learning", "Data Processing"],
+            advanced: ["Big Data Systems", "Astronomical Data Pipelines"]
+        },
+        skills: ["Python", "Machine Learning", "Data Cleaning", "Statistical Analysis"],
+        qualifications: "Bachelor's in Data Science, Computer Science, or Physics.",
+        careers: [
+            { role: "Space Data Scientist", demand: "High with satellite and telescope data growth", type: "ai" },
+            { role: "Astroinformatics Researcher", demand: "Growing in research institutions", type: "research" }
+        ],
+        industryOutlook: {
+            summary: "Strong growth driven by increasing satellite constellations and space observatories.",
+            growthFactors: ["Satellite imagery expansion", "Deep-space surveys"],
+            riskFactors: ["High computational infrastructure cost", "Data privacy concerns"]
+        },
+        videos: [
+            { title: "Data Science in Space Exploration", link: "https://youtu.be/l4dvM05B_Pc" }
+        ]
+    },
+    "space-communications": {
+        overview: "Space Communications focuses on transmitting data between spacecraft, satellites, and ground stations using advanced radio and optical systems.",
+        roadmap: {
+            beginner: ["Basic Electronics", "Signal Fundamentals", "Physics"],
+            intermediate: ["Digital Communication Systems", "Signal Processing"],
+            advanced: ["Deep Space Networks", "Laser Communication Systems"]
+        },
+        skills: ["Signal Analysis", "RF Systems", "Communication Protocols"],
+        qualifications: "Bachelor's in Electronics or Communication Engineering.",
+        careers: [
+            { role: "Space Communication Engineer", demand: "High with satellite constellations", type: "engineering" },
+            { role: "RF Systems Analyst", demand: "Growing with deep space missions", type: "engineering" }
+        ],
+        industryOutlook: {
+            summary: "Rapid growth driven by global satellite internet and interplanetary communication systems.",
+            growthFactors: ["Satellite internet networks", "Laser communication technology"],
+            riskFactors: ["Signal interference", "High infrastructure costs"]
+        },
+        videos: [
+            { title: "How Space Communication Works", link: "https://youtu.be/MDMM9MZNcco" }
+        ]
+    },
+    "earth-observation": {
+        overview: "Earth Observation uses satellites to monitor climate, weather, agriculture, and environmental changes on Earth.",
+        roadmap: {
+            beginner: ["Geography Basics", "Physics", "Programming Basics"],
+            intermediate: ["Remote Sensing", "GIS Systems"],
+            advanced: ["Climate Modeling", "Satellite Image Analysis"]
+        },
+        skills: ["Data Analysis", "Remote Sensing Tools", "GIS"],
+        qualifications: "Bachelor's in Environmental Science, Geoinformatics, or Space Science.",
+        careers: [
+            { role: "Remote Sensing Analyst", demand: "High in environmental monitoring", type: "ai" },
+            { role: "Earth Observation Scientist", demand: "Growing with climate research", type: "research" }
+        ],
+        industryOutlook: {
+            summary: "Strong demand due to climate change monitoring and disaster management.",
+            growthFactors: ["Climate monitoring programs", "Agricultural satellite data"],
+            riskFactors: ["Policy changes", "Data privacy concerns"]
+        },
+        videos: [
+            { title: "Earth Observation Explained", link: "https://youtu.be/Q4WK_J9HtDE" }
+        ]
+    },
+    "orbital-mechanics": {
+        overview: "Orbital Mechanics studies the motion of spacecraft and celestial bodies under gravitational forces.",
+        roadmap: {
+            beginner: ["Physics Mechanics", "Calculus"],
+            intermediate: ["Classical Mechanics", "Two-Body Problem"],
+            advanced: ["Interplanetary Trajectories", "Orbit Optimization"]
+        },
+        skills: ["Mathematical Modeling", "Simulation Tools", "Analytical Thinking"],
+        qualifications: "Bachelor's in Aerospace or Physics.",
+        careers: [
+            { role: "Orbital Analyst", demand: "High in mission planning teams", type: "engineering" },
+            { role: "Trajectory Engineer", demand: "Growing with deep space missions", type: "engineering" }
+        ],
+        industryOutlook: {
+            summary: "Critical for satellite constellations and interplanetary missions.",
+            growthFactors: ["Satellite constellations", "Deep space exploration"],
+            riskFactors: ["Complex mathematical modeling", "Mission precision requirements"]
+        },
+        videos: [
+            { title: "Understanding Orbital Mechanics", link: "https://youtu.be/bcvnfQlz1x4" }
+        ]
+    },
+    "space-policy": {
+        overview: "Space Policy focuses on laws, regulations, and international agreements governing space exploration and satellite operations.",
+        roadmap: {
+            beginner: ["International Relations Basics", "Law Fundamentals"],
+            intermediate: ["Space Law", "Policy Analysis"],
+            advanced: ["Global Space Treaties", "Commercial Space Regulation"]
+        },
+        skills: ["Policy Research", "Legal Analysis", "Strategic Planning"],
+        qualifications: "Bachelor's in Law, International Relations, or Public Policy.",
+        careers: [
+            { role: "Space Policy Analyst", demand: "Growing with commercial space expansion", type: "research" },
+            { role: "Regulatory Advisor", demand: "Increasing with private space companies", type: "research" }
+        ],
+        industryOutlook: {
+            summary: "Increasing importance due to commercialization and geopolitical competition in space.",
+            growthFactors: ["Private space companies", "International cooperation"],
+            riskFactors: ["Geopolitical tensions", "Policy uncertainty"]
+        },
+        videos: [
+            { title: "Introduction to Space Law", link: "https://youtu.be/NUCZt5OcszY" }
+        ]
     }
-
-
-
-
-
-
-
-
-
-}
+};

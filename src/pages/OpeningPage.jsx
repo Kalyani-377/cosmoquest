@@ -80,7 +80,7 @@ export default function OpeningPage() {
                                 <div className="planet-moon"></div>
                             </div>
 
-                            <div className="planet-earth spin"></div>
+                            <div className="planet-earth"></div>
 
                         </div>
 

@@ -1,7 +1,9 @@
 from flask import Flask, jsonify, request
+
 from flask_cors import CORS
 from db import engine, Base, SessionLocal
 from models import Event
+from datetime import date
 from jose import jwt
 from dotenv import load_dotenv
 import requests
@@ -61,39 +63,124 @@ Base.metadata.create_all(bind=engine)
 def home():
     return {"message": "CosmoQuest Backend Signal Active"}
 
-# 🚀 GLOBAL CURATED MISSIONS
+# 🚀 GLOBAL CURATED MISSIONS (2026 Calendar)
 GLOBAL_CURATED_EVENTS = [
     {
         "id": "iss-global-1",
         "event_type": "ISS Transcontinental Pass",
         "type": "iss",
-        "description": "The ISS will be visible across multiple continents tonight. A bright streak of light.",
+        "description": "The International Space Station will be visible as a bright, steady light crossing the sky over multiple continents tonight.",
         "location": "Global",
-        "visibility": "High"
+        "visibility": "High",
+        "date": "2026-02-23"
     },
     {
         "id": "planet-global-1",
-        "event_type": "Venus Peak Visibility",
+        "event_type": "Venus: Evening Star Peak",
         "type": "planet",
-        "description": "Venus reaches its highest point in the evening sky.",
+        "description": "Venus reaches its highest point in the evening sky, shining brighter than any star.",
         "location": "Global",
-        "visibility": "Very High"
+        "visibility": "Very High",
+        "date": "2026-02-24"
     },
     {
-        "id": "meteor-global-1",
-        "event_type": "Geminids Peak",
-        "type": "meteor",
-        "description": "The most reliable annual meteor shower peaking worldwide.",
-        "location": "Global",
-        "visibility": "High"
-    },
-    {
-        "id": "eclipse-global-1",
-        "event_type": "Solar Eclipse 2026",
+        "id": "eclipse-lunar-2026",
+        "event_type": "Total Lunar Eclipse (Blood Moon)",
         "type": "eclipse",
-        "description": "Upcoming total solar eclipse visible in certain regions.",
-        "location": "North America",
-        "visibility": "Extreme"
+        "description": "The Moon passes through the Earth's shadow, turning a deep copper-red color. Visible across North America and Asia.",
+        "location": "Global",
+        "visibility": "High",
+        "date": "2026-03-03"
+    },
+    {
+        "id": "meteor-lyrids-2026",
+        "event_type": "Lyrids Meteor Shower Peak",
+        "type": "meteor",
+        "description": "The oldest recorded meteor shower. Expect up to 18 meteors per hour under dark skies.",
+        "location": "Northern Hemisphere",
+        "visibility": "Medium",
+        "date": "2026-04-22"
+    },
+    {
+        "id": "planet-jupiter-2026",
+        "event_type": "Jupiter-Venus Conjunction",
+        "type": "planet",
+        "description": "The two brightest planets will appear extremely close together in the morning sky. A rare celestial double-act.",
+        "location": "Global",
+        "visibility": "Extreme",
+        "date": "2026-06-09"
+    },
+    {
+        "id": "eclipse-solar-2026",
+        "event_type": "Total Solar Eclipse 2026",
+        "type": "eclipse",
+        "description": "The first total solar eclipse in Europe for over 20 years. Path of totality crosses Greenland, Iceland, and Northern Spain.",
+        "location": "Europe/North America",
+        "visibility": "Extreme",
+        "date": "2026-08-12"
+    },
+    {
+        "id": "meteor-perseids-2026",
+        "event_type": "Perseids Meteor Shower",
+        "type": "meteor",
+        "description": "The most popular meteor shower of the year. Known for fast, bright meteors and frequent fireballs.",
+        "location": "Global",
+        "visibility": "High",
+        "date": "2026-08-13"
+    },
+    {
+        "id": "planet-saturn-2026",
+        "event_type": "Saturn at Opposition",
+        "type": "planet",
+        "description": "The ringed planet is at its closest to Earth and fully illuminated by the Sun. Best time for telescopic viewing.",
+        "location": "Global",
+        "visibility": "High",
+        "date": "2026-10-04"
+    },
+    {
+        "id": "meteor-orionids-2026",
+        "event_type": "Orionids Meteor Shower",
+        "type": "meteor",
+        "description": "Meteors produced by debris from the famous Halley's Comet.",
+        "location": "Global",
+        "visibility": "Medium",
+        "date": "2026-10-21"
+    },
+    {
+        "id": "meteor-geminids-2026",
+        "event_type": "Geminids Peak Visibility",
+        "type": "meteor",
+        "description": "Widely considered to be the best meteor shower in the heavens, producing up to 120 multicolored meteors per hour.",
+        "location": "Global",
+        "visibility": "High",
+        "date": "2026-12-14"
+    },
+    {
+        "id": "constellation-orion",
+        "event_type": "Orion: The Hunter Emerges",
+        "type": "constellation",
+        "description": "One of the most recognizable constellations. Look for the three stars of Orion's Belt in a straight line.",
+        "location": "Global",
+        "visibility": "Very High",
+        "date": "2026-02-23"
+    },
+    {
+        "id": "constellation-ursa-major",
+        "event_type": "Ursa Major (The Big Dipper)",
+        "type": "constellation",
+        "description": "High in the northern sky. Use its pointer stars to find Polaris, the North Star.",
+        "location": "Northern Hemisphere",
+        "visibility": "High",
+        "date": "2026-03-21"
+    },
+    {
+        "id": "constellation-canis-major",
+        "event_type": "Canis Major (The Great Dog)",
+        "type": "constellation",
+        "description": "Home to Sirius, the brightest star in the sky. It follows Orion the Hunter across the heavens.",
+        "location": "Global",
+        "visibility": "Extreme",
+        "date": "2026-02-24"
     }
 ]
 
@@ -102,29 +189,34 @@ GLOBAL_CURATED_EVENTS = [
 # ------------------------------
 @app.route("/events")
 def get_events():
-    auth_header = request.headers.get("Authorization")
-    if not auth_header:
-        return {"error": "Unauthorized"}, 401
+    try:
+        auth_header = request.headers.get("Authorization")
+        if not auth_header:
+            return {"error": "Unauthorized"}, 401
 
-    db = SessionLocal()
-    db_events = db.query(Event).all()
-    
-    local_results = [
-        {
-            "id": f"db-{e.id}",
-            "type": e.type or "star",
-            "event_type": e.event_type,
-            "description": e.description,
-            "location": e.location or "Unknown",
-            "visibility": e.visibility or "Medium"
-        }
-        for e in db_events
-    ]
-    db.close()
+        db = SessionLocal()
+        db_events = db.query(Event).all()
+        
+        local_results = [
+            {
+                "id": f"db-{e.id}",
+                "type": e.type or "star",
+                "event_type": e.event_type,
+                "description": e.description,
+                "location": e.location or "Unknown",
+                "visibility": e.visibility or "Medium",
+                "date": e.date or str(date.today())
+            }
+            for e in db_events
+        ]
+        db.close()
 
-    return jsonify({
-        "events": GLOBAL_CURATED_EVENTS + local_results
-    })
+        return jsonify({
+            "events": GLOBAL_CURATED_EVENTS + local_results
+        })
+    except Exception as e:
+        print(f"ERROR IN /events: {str(e)}")
+        return jsonify({"error": str(e)}), 500
 
 # ------------------------------
 # NEW: Protected dashboard route
@@ -135,6 +227,8 @@ WEATHER_API_KEY = os.getenv("WEATHER_API")
 
 @app.route("/dashboard", methods=["POST"])
 def dashboard():
+    print("DASHBOARD REQUEST RECEIVED")
+    today = date.today()
     auth_header = request.headers.get("Authorization")
 
     if not auth_header:
@@ -166,8 +260,52 @@ def dashboard():
     except Exception as e:
         return jsonify({"error": f"Failed to fetch weather data: {str(e)}"}), 500
 
+    # DYNAMIC CELESTIAL ENGINE ( Hemispheric & Seasonal Logic)
+    visible_constellations = []
+    month = today.month
+    is_northern = lat > 0
+
+    # Constellation Database (Hemisphere, Best Months, Description)
+    CONSTELLATION_DATA = [
+        {"name": "Orion (The Hunter)", "hemi": "both", "months": [12, 1, 2, 3], "desc": "The most famous winter constellation. Look for the three stars of Orion's Belt."},
+        {"name": "Ursa Major (Big Dipper)", "hemi": "north", "months": list(range(1, 13)), "desc": "Visible year-round in the north. Its pointer stars lead to the North Star."},
+        {"name": "Crux (Southern Cross)", "hemi": "south", "months": list(range(1, 13)), "desc": "The iconic symbol of the southern skies. Used for navigation for centuries."},
+        {"name": "Scorpius (The Scorpion)", "hemi": "both", "months": [5, 6, 7, 8], "desc": "A magnificent constellation with the red supergiant star Antares at its heart."},
+        {"name": "Leo (The Lion)", "hemi": "both", "months": [3, 4, 5, 6], "desc": "A sign of Spring in the north. Its brightest star Regulus sits on the ecliptic."},
+        {"name": "Cygnus (The Swan)", "hemi": "north", "months": [7, 8, 9, 10], "desc": "Part of the Summer Triangle. Its cross shape is easily identified in the Milky Way."},
+        {"name": "Cassiopeia (The Queen)", "hemi": "north", "months": list(range(1, 13)), "desc": "A distinct 'W' or 'M' shape across from the Big Dipper."},
+        {"name": "Centaurus", "hemi": "south", "months": [3, 4, 5, 6, 7], "desc": "Home to Alpha Centauri, the closest star system to our Sun."},
+        {"name": "Gemini (The Twins)", "hemi": "both", "months": [1, 2, 3, 4, 12], "desc": "Represented by the bright twin stars Castor and Pollux."},
+        {"name": "Taurus (The Bull)", "hemi": "both", "months": [11, 12, 1, 2, 3], "desc": "Contains the bright Pleaides star cluster (The Seven Sisters)."},
+        {"name": "Canis Major (The Great Dog)", "hemi": "both", "months": [12, 1, 2, 3, 4], "desc": "The constellation containing Sirius, the brightest star in the night sky. It represents the larger of Orion's two hunting dogs."}
+    ]
+
+    # Filter by user location, current time, AND WEATHER
+    for c in CONSTELLATION_DATA:
+        if month in c['months']:
+            if c['hemi'] == 'both' or (c['hemi'] == 'north' and is_northern) or (c['hemi'] == 'south' and not is_northern):
+                # WEATHER LOGIC: Adjust status based on cloud cover
+                if cloud_cover < 30:
+                    status = "PRIME VIEWING"
+                    weather_advice = "Perfectly clear skies tonight."
+                elif cloud_cover < 70:
+                    status = "INTERMITTENT"
+                    weather_advice = "Passing clouds might obscure viewing."
+                else:
+                    status = "OBSCURED"
+                    weather_advice = "Heavy cloud cover detected. Use orbital data for tracking."
+
+                visible_constellations.append({
+                    "id": f"constellation_{c['name'].replace(' ', '-')}",
+                    "event_type": c['name'],
+                    "type": "constellations",
+                    "visibility": status,
+                    "date": str(today),
+                    "description": f"{c['desc']} {weather_advice}"
+                })
+
     # CURATED LOCATION-BASED EVENTS
-    event_list = []
+    event_list = visible_constellations[:4] # Pick top 4 relevant ones
 
     # 1. REAL ISS PASS (Based on user coordinates)
     try:
@@ -179,8 +317,9 @@ def dashboard():
                 "id": f"iss_ISS-Overpass-{pass_time}",
                 "event_type": "ISS Overpass",
                 "type": "iss",
-                "visibility": "High",
-                "description": f"The ISS will pass directly over your location tonight. Look for a bright, steady light moving across the sky."
+                "visibility": "HIGH (CLEAR SKIES)" if cloud_cover < 40 else "POOR (CLOUDY)",
+                "date": str(date.fromtimestamp(pass_time)),
+                "description": f"The ISS will pass over at {date.fromtimestamp(pass_time).strftime('%H:%M')}. {'Look for a bright streak!' if cloud_cover < 40 else 'Cloud cover may block the view.'}"
             })
     except:
         event_list.append({
@@ -191,16 +330,34 @@ def dashboard():
             "description": "The ISS is currently visible in your region. Check local charts for exact timing."
         })
 
-    # 2. PLANETS
-    event_list.append({
-        "id": "planet_Jupiter-Brightness",
-        "event_type": "Jupiter Brightness",
-        "type": "planets",
-        "visibility": "Very High" if cloud_cover < 20 else "Medium",
-        "description": f"Visible in the Eastern sky. Currently at its brightest point from your location."
-    })
+    # 2. PROMINENT STARS (Position Aware)
+    brightest_stars = [
+        {"name": "Sirius (The Dog Star)", "hemi": "both", "months": [12, 1, 2, 3, 4], "desc": "The brightest star in the entire night sky."},
+        {"name": "Canopus", "hemi": "south", "months": [1, 2, 3], "desc": "The second brightest star, legendary in the Southern Hemisphere."},
+        {"name": "Vega", "hemi": "north", "months": [6, 7, 8, 9], "desc": "A brilliant blue-white star, part of the Summer Triangle."}
+    ]
+    
+    for s in brightest_stars:
+        if month in s['months']:
+             if s['hemi'] == 'both' or (s['hemi'] == 'north' and is_northern) or (s['hemi'] == 'south' and not is_northern):
+                # WEATHER LOGIC for stars
+                if cloud_cover < 20:
+                    status = "BRIGHT PEAK"
+                elif cloud_cover < 50:
+                    status = "VISIBLE"
+                else:
+                    status = "LOW VISIBILITY"
 
-    # 4. REAL-TIME SPACE WEATHER (NASA DONKI - Solar Flares)
+                event_list.append({
+                    "id": f"star_{s['name'].replace(' ', '-')}",
+                    "event_type": s['name'],
+                    "type": "constellations",
+                    "visibility": status,
+                    "date": str(today),
+                    "description": f"{s['desc']} Current local cloud cover is {cloud_cover}%."
+                })
+
+    # 3. PLANETS
     try:
         donki_url = f"https://api.nasa.gov/DONKI/FLR?startDate={today}&api_key={NASA_API_KEY or 'DEMO_KEY'}"
         donki_res = requests.get(donki_url).json()
@@ -212,6 +369,7 @@ def dashboard():
                 "type": "iss",
                 "source": "NASA LIVE",
                 "visibility": "Radio Aurora Possible",
+                "date": flare['beginTime'].split('T')[0],
                 "description": f"A {flare['classType']} class solar flare was detected peaking recently. This is real-time space weather data from NASA's DONKI system."
             })
     except:
@@ -230,6 +388,7 @@ def dashboard():
                 "type": "meteors",
                 "source": "NASA LIVE",
                 "visibility": "Live Tracking",
+                "date": str(today),
                 "description": f"Real-time tracking of Asteroid {top_neo['name']}. It is currently moving at {float(top_neo['close_approach_data'][0]['relative_velocity']['kilometers_per_hour']):,.0f} km/h."
             })
     except:
@@ -247,6 +406,7 @@ def dashboard():
         "event_type": "Lunar Elevation",
         "type": "eclipses",
         "visibility": "Information",
+        "date": str(today),
         "description": "The moon is in an optimal phase for crater observation with simple binoculars."
     })
 
@@ -337,10 +497,25 @@ def get_event_details(event_id):
     elif "meteor" in name_lower: base_type = "meteor"
     elif "asteroid" in name_lower: base_type = "asteroid"
     elif "solar" in name_lower or "flare" in name_lower: base_type = "solar"
+    elif "saturn" in name_lower: base_type = "saturn"
+    elif "ursa" in name_lower: base_type = "ursa"
+    elif "orion" in name_lower: base_type = "orion"
+    elif "constellation" in name_lower: base_type = "constellation"
+    elif "sirius" in name_lower or "canis major" in name_lower: base_type = "sirius"
     
     details = {
+        "orion": {
+            "image": "https://c02.purpledshub.com/uploads/sites/48/2020/02/Orion-07db06a.jpg",
+            "spots": ["Orion's Belt Lookout", "Celestial Hunter Station"],
+            "tips": ["The three stars of the belt are Betelgeuse, Rigel, and Bellatrix.", "Look for the Orion Nebula (M42) just below the belt.", "Orion is one of the most recognizable constellations in the night sky."]
+        },
+        "ursa": {
+            "image": "https://nineplanets.org/wp-content/uploads/2020/12/the-constellation-of-ursa-major-7.jpg",
+            "spots": ["Northern Horizon Clearings", "North Hill Observatory"],
+            "tips": ["The pointer stars in the bowl of the Big Dipper point directly to Polaris.", "Look for M81 and M82, two bright galaxies near the 'head' of the bear.", "Ursa Major is circumpolar in most of the northern hemisphere, meaning it never sets."]
+        },
         "iss": {
-            "image": "https://images.unsplash.com/photo-1454789548928-142270836592?auto=format&fit=crop&q=80&w=2000",
+            "image": "https://images.pexels.com/photos/586073/pexels-photo-586073.jpeg",
             "spots": ["Satellite Viewpoint", "Outer Rim Observatory", "North Hill Clearing"],
             "tips": ["Look for a bright 'star' moving steadily without blinking.", "Use a sky tracking app to know exactly where it will emerge.", "No telescope needed - it's best seen with the naked eye!"]
         },
@@ -369,6 +544,11 @@ def get_event_details(event_id):
             "spots": ["Evening Star Ridge", "Morning Vista Point"],
             "tips": ["Venus is the brightest object in the sky after the Sun and Moon.", "It is often called the 'Evening Star' as it's the first to appear after sunset.", "A small telescope will reveal its phases, which look like the Moon's phases."]
         },
+        "saturn": {
+            "image": "https://images.pexels.com/photos/12498805/pexels-photo-12498805.jpeg",
+            "spots": ["Ring Viewpoint", "High Altitude Ridge", "Dark Sky Plateau"],
+            "tips": ["Saturn's rings are visible even in a small telescope.", "Look for the moon Titan, which looks like a tiny star near the planet.", "Opposition is the best time to see the planet as it is brightest and closest."]
+        },
         "planet": {
             "image": "https://images.pexels.com/photos/1819676/pexels-photo-1819676.jpeg",
             "spots": ["Planetary Vista", "Stargazer Flat", "Lake View Ridge"],
@@ -379,6 +559,11 @@ def get_event_details(event_id):
             "spots": ["Crater Viewmont", "Lunar Plateau", "Shadow Rim Ridge"],
             "tips": ["The line between light and dark (the terminator) is where craters are most visible.", "A moon filter for your telescope can reduce glare and show more detail.", "Even simple binoculars will reveal the moon's maria and major craters."]
         },
+        "constellation": {
+            "image": "https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&q=80&w=2000",
+            "spots": ["Deep Space Lookout", "Mountain Vista", "Quiet Field Station"],
+            "tips": ["Use a star map or app to connect the dots between major stars.", "Avert your vision (look slightly away) to see fainter stars in the pattern.", "Wait for a moonless night for the best contrast against the black sky."]
+        },
         "meteor": {
             "image": "https://images.pexels.com/photos/11565999/pexels-photo-11565999.jpeg",
             "spots": ["Meteor Peak", "Comet Valley", "Dark Wood Plateau"],
@@ -388,6 +573,11 @@ def get_event_details(event_id):
             "image": "https://images.unsplash.com/photo-1532960401447-7ee053238bd1?auto=format&fit=crop&q=80&w=2000",
             "spots": ["Shadow Ridge", "Lunar Hollow", "Ancient Stone Lookout"],
             "tips": ["Lunar eclipses are perfectly safe to view with the naked eye.", "Watch for the 'Blood Moon' effect as the moon turns deep red.", "Try long-exposure photography to capture the subtle color shifts."]
+        },
+        "sirius": {
+            "image": "https://upload.wikimedia.org/wikipedia/commons/c/c6/Sirius.jpg",
+            "spots": ["Southern Horizon View", "Clear Sky Peak"],
+            "tips": ["Sirius is the brightest star in the night sky and the focal point of Canis Major.", "It's also known as the Dog Star because it's in the constellation Canis Major (The Great Dog).", "To find it, follow the line of Orion's Belt down and to the left.", "The star's bright blue-white glow is unmistakable even in light-polluted areas."]
         }
     }
 
@@ -400,15 +590,30 @@ def get_event_details(event_id):
             {"name": f"{details[base_type]['spots'][1]} Near You", "level": "Good (Bortle 4)"}
         ]
 
+        # REAL-TIME WEATHER FOR DETAILS PAGE
+        local_weather = {"condition": "Optimal Viewing", "cloud_cover": 0}
+        if lat != "Unknown" and lng != "Unknown":
+            try:
+                w_url = f"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lng}&appid={WEATHER_API_KEY}&units=metric"
+                w_res = requests.get(w_url).json()
+                if w_res.get("cod") == 200:
+                    local_weather = {
+                        "condition": w_res["weather"][0]["description"].capitalize(),
+                        "cloud_cover": w_res["clouds"]["all"]
+                    }
+            except:
+                pass
+
         return jsonify({
             "id": event_id,
             "name": display_name,
             "description": f"This is a LIVE tracking mission. {display_name} has been identified in the current sector. For the best experience, move away from city lights.",
-            "visibility": "High",
+            "visibility": "High" if local_weather['cloud_cover'] < 40 else "Medium" if local_weather['cloud_cover'] < 70 else "Low",
+            "date": curated["date"] if curated else str(date.today()),
             "image": details[base_type]["image"],
             "dark_spots": dynamic_spots,
             "tips": details[base_type]["tips"],
-            "weather": {"condition": "Optimal Viewing"}
+            "weather": local_weather
         })
 
     # 2. Handle database IDs (marked with db-)
@@ -432,18 +637,34 @@ def get_event_details(event_id):
             elif "meteor" in name_lower: ev_type = "meteor"
             elif "asteroid" in name_lower: ev_type = "asteroid"
             elif "solar" in name_lower or "flare" in name_lower: ev_type = "solar"
+            elif "saturn" in name_lower: ev_type = "saturn"
 
             info = details.get(ev_type, details["planet"])
             
+            # REAL-TIME WEATHER FOR DATABASE EVENTS
+            local_weather = {"condition": "Sky Scanning...", "cloud_cover": 0}
+            if lat != "Unknown" and lng != "Unknown":
+                try:
+                    w_url = f"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lng}&appid={WEATHER_API_KEY}&units=metric"
+                    w_res = requests.get(w_url).json()
+                    if w_res.get("cod") == 200:
+                        local_weather = {
+                            "condition": w_res["weather"][0]["description"].capitalize(),
+                            "cloud_cover": w_res["clouds"]["all"]
+                        }
+                except:
+                    pass
+
             return jsonify({
                 "id": event_id,
                 "name": event.event_type,
                 "description": event.description,
-                "visibility": event.visibility or "High",
+                "visibility": event.visibility or ("High" if local_weather['cloud_cover'] < 40 else "Low"),
+                "date": event.date or str(date.today()),
                 "image": info["image"],
                 "dark_spots": [{"name": "Regional Observatory", "level": "Excellent (Bortle 2)"}, {"name": "Mountain Ridge", "level": "Good (Bortle 4)"}],
                 "tips": info["tips"],
-                "weather": {"condition": "Clear Skies"}
+                "weather": local_weather
             })
 
     return {"error": "Event not found"}, 404
@@ -463,35 +684,40 @@ def add_test_event():
             event_type="ISS Overpass Kerala",
             description="Crystal clear visibility expected over coastal regions tonight.",
             location="Kochi, Kerala",
-            visibility="High"
+            visibility="High",
+            date="2026-02-23"
         ),
         Event(
             type="planet",
             event_type="Jupiter Moon Transit",
             description="Io and Europa will be visible crossing Jupiter's disk.",
             location="Hyderabad, India",
-            visibility="Very High"
+            visibility="Very High",
+            date="2026-02-24"
         ),
         Event(
             type="meteor",
             event_type="Orionids Shower",
             description="Best viewed from the high altitude parks.",
             location="Bangalore, India",
-            visibility="Medium"
+            visibility="Medium",
+            date="2026-10-21"
         ),
         Event(
             type="eclipse",
-            event_type="Partial Moon Shadow",
-            description="Subtle shading on the northern lunar limb.",
-            location="New Delhi, India",
-            visibility="Low"
+            event_type="Total Lunar Eclipse",
+            description="The 'Blood Moon' will be visible across North America and Asia.",
+            location="Global",
+            visibility="High",
+            date="2026-03-03"
         ),
         Event(
             type="iss",
             event_type="ISS Transcontinental",
-            description="Visible for 6 minutes straight.",
+            description="Visible for 6 minutes straight over the horizon.",
             location="Global",
-            visibility="High"
+            visibility="High",
+            date="2026-02-23"
         )
     ]
 

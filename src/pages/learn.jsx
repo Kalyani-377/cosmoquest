@@ -25,8 +25,7 @@ export default function Learn() {
 
                 {/* Hero */}
                 <div className="text-center max-w-3xl mx-auto relative z-10">
-                    <h1 className="text-5xl md:text-6xl font-bold leading-[1.3] tracking-wide mb-8 pb-3 text-white text-transparent">
-
+                    <h1 className="text-5xl md:text-6xl font-black leading-[1.3] tracking-tight mb-8 pb-3 text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">
                         Discover Your Path in Space Technology
                     </h1>
 

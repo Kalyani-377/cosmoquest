@@ -10,3 +10,4 @@ class Event(Base):
     description = Column(String)
     location = Column(String) # e.g., 'Global', 'New York, USA', etc.
     visibility = Column(String, default="High")
+    date = Column(String) # e.g., '2026-02-23'

@@ -10,8 +10,8 @@ export default function DomainResults({ domains }) {
                 Recommended Domains
             </h2>
 
-            <div className="grid md:grid-cols-2 gap-6">
-                {domains.slice(0, 5).map((domain, index) => (
+            <div className="grid md:grid-cols-2 gap-6 pb-20">
+                {domains.map((domain, index) => (
                     <DomainCard key={index} domain={domain} />
                 ))}
             </div>

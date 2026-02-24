@@ -10,11 +10,16 @@ export default function DomainDetail() {
     const navigate = useNavigate();
 
     const { id } = useParams();
-    const data = domainDetails[id];
+    // Case-insensitive lookup
+    const domainKey = Object.keys(domainDetails).find(k => k.toLowerCase() === id?.toLowerCase());
+    const data = domainDetails[domainKey];
+    console.log("Domain ID:", id);
+    console.log("Domain Data:", data);
 
     const [activeTab, setActiveTab] = useState("overview");
     const [filter, setFilter] = useState("all");
     const [expandedLevel, setExpandedLevel] = useState(null);
+    const [selectedSubject, setSelectedSubject] = useState(null);
     const levelStyles = {
         beginner: {
             title: "text-blue-400",
@@ -111,6 +116,31 @@ export default function DomainDetail() {
         if (level === "advanced") return "Contribute to open-source research or publish findings.";
     };
 
+    const getSubjectDetails = (subject) => {
+        // Dynamic content generator based on subject name keywords
+        const s = subject.toLowerCase();
+        const details = {
+            title: subject,
+            overview: `This module dives deep into ${subject}, covering the theoretical foundations and practical applications required for ${id} missions.`,
+            topics: ["Core Principles", "Industry Standards", "Advanced Methodologies", "Real-world Case Studies"],
+            tools: ["MATLAB / Simulink", "Python (NumPy/SciPy)", "STK (Systems Tool Kit)", "NASA Open APIs"]
+        };
+
+        if (s.includes("physics")) {
+            details.overview = "Mastering the physical laws that govern celestial mechanics and propulsion systems.";
+            details.topics = ["Classical Mechanics", "Thermodynamics", "Electromagnetism", "Relativistic Effects"];
+        } else if (s.includes("programming") || s.includes("python") || s.includes("ai")) {
+            details.overview = "Building the computational backbone for mission control and data processing.";
+            details.topics = ["Algorithm Design", "Real-time Systems", "Machine Learning Models", "Neural Networks"];
+            details.tools = ["Python", "C++", "TensorFlow / PyTorch", "ROS (Robot OS)"];
+        } else if (s.includes("mechanics") || s.includes("orbit")) {
+            details.overview = "Understanding the complex trajectories and gravitational interactions in space.";
+            details.topics = ["Keplerian Elements", "Hohmann Transfers", "N-Body Problem", "Perturbation Theory"];
+        }
+
+        return details;
+    };
+
 
     return (
         <>
@@ -130,8 +160,8 @@ export default function DomainDetail() {
                 <div className="mb-12 space-y-6">
 
                     <div>
-                        <h1 className="text-4xl md:text-5xl font-bold tracking-wide bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent font-orbitron">
-                            {id.replace("-", " ").toUpperCase()}
+                        <h1 className="text-4xl md:text-5xl font-bold tracking-wide bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-white md:text-transparent font-orbitron">
+                            {id ? id.replace("-", " ").toUpperCase() : "DOMAIN DETAIL"}
                         </h1>
 
                         <p className="text-gray-400 mt-4 max-w-3xl">
@@ -191,41 +221,173 @@ export default function DomainDetail() {
 
                 {/* Roadmap */}
                 {activeTab === "roadmap" && (
-                    <div className="grid md:grid-cols-3 gap-6">
-                        {["beginner", "intermediate", "advanced"].map((level) => (
-                            <div
-                                key={level}
-                                onClick={() =>
-                                    setExpandedLevel(expandedLevel === level ? null : level)
-                                }
-                                className={`cursor-pointer bg-white/5 backdrop-blur-sm p-6 rounded-xl border border-white/10
-${expandedLevel === level ? "bg-white/10 scale-[1.02]" : ""}
-${levelStyles[level].hoverBorder}
-${levelStyles[level].hoverShadow}
-transition-all duration-300`}
-
-                            >
-                                <h3
-                                    className={`text-lg font-semibold mb-4 capitalize ${levelStyles[level].title}`}
+                    <div className="space-y-10">
+                        <div className="grid md:grid-cols-3 gap-6">
+                            {["beginner", "intermediate", "advanced"].map((level) => (
+                                <div
+                                    key={level}
+                                    className={`bg-white/5 backdrop-blur-sm p-6 rounded-2xl border border-white/10 flex flex-col justify-between
+                                        ${levelStyles[level].hoverBorder}
+                                        ${levelStyles[level].hoverShadow}
+                                        transition-all duration-300 h-full`}
                                 >
-                                    {level}
-                                </h3>
-
-                                <ul className="space-y-2 text-gray-400">
-                                    {data.roadmap[level].map((item, i) => (
-                                        <li key={i}>• {item}</li>
-                                    ))}
-                                </ul>
-
-                                {expandedLevel === level && (
-                                    <div className="mt-6 pt-4 border-t border-white/10 text-sm text-gray-400 space-y-2">
-                                        <p><strong>Estimated Time:</strong> {getTimeEstimate(level)}</p>
-                                        <p><strong>Focus:</strong> {getFocusArea(level)}</p>
-                                        <p><strong>Suggested Mini Project:</strong> {getProjectSuggestion(level)}</p>
+                                    <div>
+                                        <h3 className={`text-xl font-semibold mb-4 capitalize font-orbitron ${levelStyles[level].title}`}>
+                                            {level}
+                                        </h3>
+                                        <ul className="space-y-2 text-gray-400 mb-6 font-poppins">
+                                            {data.roadmap && data.roadmap[level] ? (
+                                                data.roadmap[level].slice(0, 3).map((item, i) => (
+                                                    <li key={i} className="text-sm">• {item}</li>
+                                                ))
+                                            ) : (
+                                                <li>Protocols Pending...</li>
+                                            )}
+                                        </ul>
                                     </div>
-                                )}
+
+                                    <button
+                                        onClick={() => {
+                                            setExpandedLevel(expandedLevel === level ? null : level);
+                                            setSelectedSubject(null);
+                                        }}
+                                        className={`w-fit py-2 px-5 rounded-lg bg-white/5 border border-white/10 text-sm font-medium hover:bg-white/10 transition-all ${levelStyles[level].title}`}
+                                    >
+                                        {expandedLevel === level ? "Close Detail" : "View More →"}
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Expansion Detail Section */}
+                        {expandedLevel && (
+                            <div className="relative overflow-hidden bg-white/5 backdrop-blur-xl rounded-[2rem] border border-white/10 p-8 md:p-12 animate-in fade-in zoom-in-95 duration-500 group">
+                                {/* Close Button */}
+                                <button
+                                    onClick={() => {
+                                        setExpandedLevel(null);
+                                        setSelectedSubject(null);
+                                    }}
+                                    className="absolute top-6 right-6 text-gray-500 hover:text-white bg-white/5 hover:bg-white/10 w-10 h-10 rounded-full flex items-center justify-center transition-all z-20"
+                                >
+                                    ✕
+                                </button>
+
+                                <div className="grid lg:grid-cols-2 gap-12 relative z-10">
+                                    <div className="space-y-10">
+                                        <div>
+                                            <h3 className={`text-3xl font-bold font-orbitron capitalize mb-3 ${levelStyles[expandedLevel].title}`}>
+                                                {expandedLevel} Curriculum
+                                            </h3>
+                                            <div className="flex items-center gap-4 text-gray-400 bg-white/5 w-fit px-4 py-2 rounded-full border border-white/5">
+                                                <span className="text-lg">⏱</span>
+                                                <span className="text-sm font-medium tracking-wide">ESTIMATED TIME: {getTimeEstimate(expandedLevel).toUpperCase()}</span>
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-6">
+                                            <div className="p-6 bg-white/5 rounded-2xl border border-white/5 hover:border-blue-400/20 transition-colors">
+                                                <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-gray-500 mb-3">Target Focus Area</h4>
+                                                <p className="text-xl text-blue-100 font-medium">{getFocusArea(expandedLevel)}</p>
+                                            </div>
+
+                                            <div className="p-6 bg-gradient-to-br from-emerald-500/10 to-transparent rounded-2xl border border-emerald-500/20">
+                                                <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-emerald-500/60 mb-3">Milestone Project</h4>
+                                                <p className="text-emerald-100 italic leading-relaxed">
+                                                    " {getProjectSuggestion(expandedLevel)} "
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="bg-black/20 p-8 rounded-3xl border border-white/5 min-h-[400px] flex flex-col">
+                                        {!selectedSubject ? (
+                                            <>
+                                                <h4 className="text-sm font-bold uppercase tracking-[0.2em] text-gray-500 mb-8 flex items-center gap-3">
+                                                    <div className="w-1.5 h-5 bg-blue-500 rounded-full shadow-[0_0_10px_rgba(59,130,246,0.5)]"></div>
+                                                    Subjects & Modules
+                                                </h4>
+                                                <div className="grid sm:grid-cols-1 gap-y-4">
+                                                    {data.roadmap && data.roadmap[expandedLevel] ? (
+                                                        data.roadmap[expandedLevel].map((item, i) => (
+                                                            <button
+                                                                key={i}
+                                                                onClick={() => setSelectedSubject(item)}
+                                                                className="flex items-center gap-4 group/item py-2 px-4 rounded-xl hover:bg-white/5 transition-all text-left w-full"
+                                                            >
+                                                                <div className={`w-2 h-2 rounded-full transition-all duration-300 group-hover/item:scale-150
+                                                                    ${expandedLevel === 'beginner' ? 'bg-blue-500/40 group-hover/item:bg-blue-400' :
+                                                                        expandedLevel === 'intermediate' ? 'bg-purple-500/40 group-hover/item:bg-purple-400' :
+                                                                            'bg-pink-500/40 group-hover/item:bg-pink-400'}`}>
+                                                                </div>
+                                                                <span className="text-gray-300 group-hover/item:text-white transition-colors">{item}</span>
+                                                                <span className="ml-auto opacity-0 group-hover/item:opacity-40 transition-opacity text-xs">DETAILS →</span>
+                                                            </button>
+                                                        ))
+                                                    ) : (
+                                                        <p className="text-gray-500 italic">Curriculum modules loading...</p>
+                                                    )}
+                                                </div>
+                                            </>
+                                        ) : (
+                                            <div className="animate-in slide-in-from-right-4 duration-300 flex flex-col h-full">
+                                                <button
+                                                    onClick={() => setSelectedSubject(null)}
+                                                    className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-white transition-colors mb-8 w-fit"
+                                                >
+                                                    ← Back to Subjects
+                                                </button>
+
+                                                <div className="space-y-8 flex-1">
+                                                    <div>
+                                                        <h3 className={`text-2xl font-bold font-orbitron mb-3 ${levelStyles[expandedLevel].title}`}>
+                                                            {getSubjectDetails(selectedSubject).title}
+                                                        </h3>
+                                                        <p className="text-gray-400 leading-relaxed italic">
+                                                            {getSubjectDetails(selectedSubject).overview}
+                                                        </p>
+                                                    </div>
+
+                                                    <div className="grid grid-cols-1 gap-6">
+                                                        <div>
+                                                            <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 mb-4">Key Learning Objectives</h4>
+                                                            <div className="flex flex-wrap gap-2">
+                                                                {getSubjectDetails(selectedSubject).topics.map((topic, i) => (
+                                                                    <span key={i} className="px-3 py-1 bg-white/5 border border-white/10 rounded-md text-xs text-gray-300">
+                                                                        {topic}
+                                                                    </span>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+
+                                                        <div>
+                                                            <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 mb-4">Professional Stack</h4>
+                                                            <div className="flex flex-wrap gap-2">
+                                                                {getSubjectDetails(selectedSubject).tools.map((tool, i) => (
+                                                                    <span key={i} className="px-3 py-1 bg-blue-500/10 border border-blue-500/20 rounded-md text-xs text-blue-300">
+                                                                        {tool}
+                                                                    </span>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div className="mt-8 pt-6 border-t border-white/5 text-[10px] text-gray-600 uppercase tracking-widest text-center">
+                                                    Module Identity: {id}-{expandedLevel.substring(0, 3)}-{selectedSubject.replace(/\s+/g, '-').toLowerCase()}
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+
+                                {/* Dynamic Background Ornament */}
+                                <div className={`absolute -bottom-24 -right-24 w-96 h-96 blur-[120px] opacity-20 pointer-events-none transition-colors duration-1000
+                                    ${expandedLevel === 'beginner' ? 'bg-blue-600' :
+                                        expandedLevel === 'intermediate' ? 'bg-purple-600' : 'bg-pink-600'}`}
+                                ></div>
                             </div>
-                        ))}
+                        )}
                     </div>
                 )}
 
@@ -258,7 +420,7 @@ transition-all duration-300`}
                         </div>
 
                         <div className="space-y-6">
-                            {filteredCareers.map((career, i) => (
+                            {filteredCareers && filteredCareers.length > 0 ? filteredCareers.map((career, i) => (
                                 <div
                                     key={i}
                                     className="bg-gradient-to-r from-white/5 to-white/0 p-6 rounded-xl border border-white/10 hover:border-blue-400/40 transition-all duration-300"
@@ -266,7 +428,7 @@ transition-all duration-300`}
                                     <h3 className="font-semibold text-lg">{career.role}</h3>
                                     <p className="text-gray-400">{career.demand}</p>
                                 </div>
-                            ))}
+                            )) : <p className="text-gray-500">No career paths documented for this sector yet.</p>}
                         </div>
                     </div>
                 )}
